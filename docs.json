@@ -1,0 +1,10 @@
+{
+  "name": "crm-import-checker",
+  "description": "Go CLI that checks a CSV before a CRM import: match keys on domain and email, duplicates, empty key fields and lifecycle stage names (MQL, SQL, opportunity).",
+  "sidebar": [
+    {
+      "title": "Overview",
+      "href": "/"
+    }
+  ]
+}

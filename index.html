@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>crm-import-checker | OneGTMLab</title>
+<meta name="description" content="Go CLI that checks a CSV before a CRM import: match keys on domain and email, duplicates, empty key fields and lifecycle stage names (MQL, SQL, opportunity).">
+<style>body{font:16px/1.6 system-ui,sans-serif;max-width:46rem;margin:2rem auto;padding:0 1rem;color:#1b1f23}pre{background:#f6f8fa;padding:1rem;overflow:auto}code{background:#f6f8fa;padding:.1em .3em}table{border-collapse:collapse}td,th{border:1px solid #d0d7de;padding:.3rem .6rem}</style>
+</head><body>
+<main>
+<h1 dir="auto">crm-import-checker</h1>
+<p dir="auto">A small Go CLI that checks a CSV <strong>before</strong> you import it into a CRM, so the import does not create the mess a RevOps clean-up<br>
+later has to remove. It follows the matching and data rules of the OneGTMLab RevOps service: match records on stable keys<br>
+(domain and email, never name), find duplicates, make sure the fields sales relies on are filled, and keep lifecycle stages to<br>
+one agreed list (MQL, SQL, opportunity by default). Go 1.20+, standard library only.</p>
+<div class="highlight highlight-source-shell" dir="auto"><pre class="notranslate">go build -o crm-import-checker <span class="pl-c1">.</span>
+./crm-import-checker -require title,company leads.csv
+./crm-import-checker -stages mql,sql,opportunity,customer leads.csv</pre></div>
+<p dir="auto">Columns it understands (case-insensitive header): <code class="notranslate">email</code>, <code class="notranslate">domain</code>, <code class="notranslate">stage</code>, plus any column you name in <code class="notranslate">-require</code>.<br>
+Two people at one company are <strong>not</strong> duplicates when their emails differ; a repeated email is. With only a <code class="notranslate">domain</code> column,<br>
+repeated domains are reported (scheme, <code class="notranslate">www.</code> and path are stripped first). Output is one line per issue; the exit code is 1<br>
+when anything is found.</p>
+<h2 dir="auto">Test</h2>
+<div class="highlight highlight-source-shell" dir="auto"><pre class="notranslate">go <span class="pl-c1">test</span> ./...</pre></div>
+<h2 dir="auto">Source of the rules</h2>
+<p dir="auto"><a href="https://www.onegtmlab.dev/services/revops">RevOps services at OneGTMLab</a>: "CRM clean-up" (companies and contacts matched on<br>
+domain and email, duplicates merged, key fields filled in) and "One set of stage definitions". MIT licensed.</p>
+</main>
+<footer><p>Source: <a href="https://github.com/jaizendra-netizen/crm-import-checker">github.com/jaizendra-netizen/crm-import-checker</a>. Maintained by <a href="https://www.onegtmlab.dev">OneGTMLab</a>.</p></footer>
+</body></html>

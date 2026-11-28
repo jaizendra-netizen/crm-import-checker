@@ -1,0 +1,31 @@
+---
+title: "crm-import-checker"
+description: "Go CLI that checks a CSV before a CRM import: match keys on domain and email, duplicates, empty key fields and lifecycle stage names (MQL, SQL, opportunity)."
+---
+
+A small Go CLI that checks a CSV **before** you import it into a CRM, so the import does not create the mess a RevOps clean-up
+later has to remove. It follows the matching and data rules of the OneGTMLab RevOps service: match records on stable keys
+(domain and email, never name), find duplicates, make sure the fields sales relies on are filled, and keep lifecycle stages to
+one agreed list (MQL, SQL, opportunity by default). Go 1.20+, standard library only.
+
+```bash
+go build -o crm-import-checker .
+./crm-import-checker -require title,company leads.csv
+./crm-import-checker -stages mql,sql,opportunity,customer leads.csv
+```
+
+Columns it understands (case-insensitive header): `email`, `domain`, `stage`, plus any column you name in `-require`.
+Two people at one company are **not** duplicates when their emails differ; a repeated email is. With only a `domain` column,
+repeated domains are reported (scheme, `www.` and path are stripped first). Output is one line per issue; the exit code is 1
+when anything is found.
+
+## Test
+
+```bash
+go test ./...
+```
+
+## Source of the rules
+
+[RevOps services at OneGTMLab](https://www.onegtmlab.dev/services/revops): "CRM clean-up" (companies and contacts matched on
+domain and email, duplicates merged, key fields filled in) and "One set of stage definitions". MIT licensed.
